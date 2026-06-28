@@ -1,0 +1,13 @@
+# OpenMPI hostfile for the 3-node Docker demo cluster.
+#
+# Maps each container (by the hostname compose assigns) to a slot count. The demo
+# uses 4 slots per node = 12 total, mirroring the report's "3 machines x 4 cores
+# = 12 processes" framing. These slots are nominal — the containers share this
+# host's physical cores — so use this for the distributed-path and topology demo,
+# not for timing.
+#
+# This is the same file format the real cluster uses; on real hardware you would
+# replace the hostnames with each node's LAN IP (see docs/RUNBOOK.md).
+node1 slots=4
+node2 slots=4
+node3 slots=4

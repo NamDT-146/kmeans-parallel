@@ -1,0 +1,94 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{macqueen1967}
+\citation{lloyd1982}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{2}{Introduction}{section.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background}{2}{section.2}\protected@file@percent }
+\newlabel{sec:background}{{2}{2}{Background}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{The $K$-means objective and Lloyd's iteration.}{2}{paragraph*.1}\protected@file@percent }
+\citation{grama2003}
+\citation{foster1995}
+\citation{amdahl1967}
+\citation{quinn2004}
+\newlabel{eq:objective}{{1}{3}{The $K$-means objective and Lloyd's iteration}{equation.2.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Designing a parallel algorithm.}{3}{paragraph*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}The sequential algorithm}{3}{section.3}\protected@file@percent }
+\newlabel{sec:serial}{{3}{3}{The sequential algorithm}{section.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Data and distance.}{3}{paragraph*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Seeding.}{3}{paragraph*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Convergence.}{3}{paragraph*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Cost.}{3}{paragraph*.6}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces One $K$-means iteration (sequential, Lloyd's step).}}{4}{algorithm.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{alg:serial}{{1}{4}{One $K$-means iteration (sequential, Lloyd's step)}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}The MPI cluster}{4}{section.4}\protected@file@percent }
+\newlabel{sec:cluster}{{4}{4}{The MPI cluster}{section.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Validating the distributed execution path.}{4}{paragraph*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Parallelisation strategy}{4}{section.5}\protected@file@percent }
+\newlabel{sec:parallel}{{5}{4}{Parallelisation strategy}{section.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Level of parallelism and decomposition technique.}{4}{paragraph*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Mapping.}{5}{paragraph*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Communication strategy and topology.}{5}{paragraph*.10}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The four communication phases. Only the all-reduce is inside the iteration loop; it carries $K(d+1)$ numbers regardless of the number of points.}}{5}{table.caption.11}\protected@file@percent }
+\newlabel{tab:comm}{{1}{5}{The four communication phases. Only the all-reduce is inside the iteration loop; it carries $K(d+1)$ numbers regardless of the number of points}{table.caption.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{Load balance.}{6}{paragraph*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Cost model.}{6}{paragraph*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Pseudo-code.}{6}{paragraph*.14}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Parallel $K$-means on process $r$ of $P$ (MPI).}}{6}{algorithm.2}\protected@file@percent }
+\newlabel{alg:mpi}{{2}{6}{Parallel $K$-means on process $r$ of $P$ (MPI)}{algorithm.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Implementation notes}{7}{section.6}\protected@file@percent }
+\newlabel{sec:impl}{{6}{7}{Implementation notes}{section.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Dataset format.}{7}{paragraph*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Timing instrumentation.}{7}{paragraph*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Build.}{7}{paragraph*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Experimental methodology}{7}{section.7}\protected@file@percent }
+\newlabel{sec:method}{{7}{7}{Experimental methodology}{section.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{What is measured.}{7}{paragraph*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Parameters.}{7}{paragraph*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Problem sizes.}{7}{paragraph*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Results}{7}{section.8}\protected@file@percent }
+\newlabel{sec:results}{{8}{7}{Results}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Correctness}{8}{subsection.8.1}\protected@file@percent }
+\newlabel{sec:correctness}{{8.1}{8}{Correctness}{subsection.8.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Running time versus problem size}{8}{subsection.8.2}\protected@file@percent }
+\newlabel{sec:vsN}{{8.2}{8}{Running time versus problem size}{subsection.8.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Running time versus the number of points $M$ on log--log axes, with communication (solid) and excluding communication (dashed). The time grows nearly linearly in $M$, matching the $\mathcal  {O}(MKd)$ model. The shaded band marks the two-to-three minute target, reached by extrapolation near $M\approx 450$--$725$ million points (shaded vertical band), beyond the range measured directly here.}}{9}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:sizesweep}{{1}{9}{Running time versus the number of points $M$ on log--log axes, with communication (solid) and excluding communication (dashed). The time grows nearly linearly in $M$, matching the $\mathcal {O}(MKd)$ model. The shaded band marks the two-to-three minute target, reached by extrapolation near $M\approx 450$--$725$ million points (shaded vertical band), beyond the range measured directly here}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Granularity and load balance}{9}{subsection.8.3}\protected@file@percent }
+\newlabel{sec:loadbalance}{{8.3}{9}{Granularity and load balance}{subsection.8.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Per-process time at the operating size, split into computation (blue) and communication (orange). The blocks are equal in size and every point costs the same to assign, so the compute spread is only \SI {5.2}{\percent } --- well within the one-quarter load-balance threshold.}}{10}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:gran}{{2}{10}{Per-process time at the operating size, split into computation (blue) and communication (orange). The blocks are equal in size and every point costs the same to assign, so the compute spread is only \SI {5.2}{\percent } --- well within the one-quarter load-balance threshold}{figure.caption.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Speed-up}{10}{subsection.8.4}\protected@file@percent }
+\newlabel{sec:speedup}{{8.4}{10}{Speed-up}{subsection.8.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Process ladder.}{10}{paragraph*.23}\protected@file@percent }
+\newlabel{fig:su-runtime}{{3a}{11}{Running time, with and without communication}{figure.caption.24}{}}
+\newlabel{sub@fig:su-runtime}{{a}{11}{Running time, with and without communication}{figure.caption.24}{}}
+\newlabel{fig:su-speedup}{{3b}{11}{Speed-up versus the ideal linear line}{figure.caption.24}{}}
+\newlabel{sub@fig:su-speedup}{{b}{11}{Speed-up versus the ideal linear line}{figure.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Strong scaling at fixed data scale $2N$ as the process count doubles. The compute-only speed-up stays near ideal because the assignment divides cleanly; the with-communication speed-up saturates because the fixed per-iteration all-reduce becomes the dominant cost as the per-process block shrinks.}}{11}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:speedup}{{3}{11}{Strong scaling at fixed data scale $2N$ as the process count doubles. The compute-only speed-up stays near ideal because the assignment divides cleanly; the with-communication speed-up saturates because the fixed per-iteration all-reduce becomes the dominant cost as the per-process block shrinks}{figure.caption.24}{}}
+\newlabel{fig:efficiency}{{4a}{11}{Parallel efficiency $E_P=S_P/P$}{figure.caption.25}{}}
+\newlabel{sub@fig:efficiency}{{a}{11}{Parallel efficiency $E_P=S_P/P$}{figure.caption.25}{}}
+\newlabel{fig:commfrac}{{4b}{11}{Communication share of wall time}{figure.caption.25}{}}
+\newlabel{sub@fig:commfrac}{{b}{11}{Communication share of wall time}{figure.caption.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Efficiency and communication overhead at data scale $2N$. The efficiency decline (left) is accounted for almost entirely by the rising communication fraction (right): the per-iteration all-reduce is a fixed cost that occupies a growing share of each iteration as the divisible compute work per process shrinks.}}{11}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:effcomm}{{4}{11}{Efficiency and communication overhead at data scale $2N$. The efficiency decline (left) is accounted for almost entirely by the rising communication fraction (right): the per-iteration all-reduce is a fixed cost that occupies a growing share of each iteration as the divisible compute work per process shrinks}{figure.caption.25}{}}
+\bibcite{lloyd1982}{1}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Discussion}{12}{section.9}\protected@file@percent }
+\newlabel{sec:discussion}{{9}{12}{Discussion}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{12}{section.10}\protected@file@percent }
+\newlabel{sec:conclusion}{{10}{12}{Conclusion}{section.10}{}}
+\@writefile{toc}{\contentsline {section}{Member contributions}{12}{section.10}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Division of responsibilities. Every component was reviewed by the whole group.}}{12}{table.caption.26}\protected@file@percent }
+\bibcite{macqueen1967}{2}
+\bibcite{quinn2004}{3}
+\bibcite{grama2003}{4}
+\bibcite{foster1995}{5}
+\bibcite{amdahl1967}{6}
+\bibcite{mpi40}{7}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Reproduction}{13}{appendix.A}\protected@file@percent }
+\newlabel{app:repro}{{A}{13}{Reproduction}{appendix.A}{}}
+\gdef \@abspage@last{14}

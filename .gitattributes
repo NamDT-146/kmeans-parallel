@@ -1,0 +1,7 @@
+# Force LF line endings on all text files so shell scripts written/checked-out
+# on Windows hosts still run inside the Ubuntu VMs. Windows teammates: this
+# guarantees scripts/*.sh keep Unix line endings even after a Windows clone.
+* text=auto eol=lf
+
+*.png binary
+*.bin binary

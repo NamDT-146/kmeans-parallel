@@ -1,0 +1,36 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Background}{2}{section.2}%
+\contentsline {paragraph}{The $K$-means objective and Lloyd's iteration.}{2}{paragraph*.1}%
+\contentsline {paragraph}{Designing a parallel algorithm.}{3}{paragraph*.2}%
+\contentsline {section}{\numberline {3}The sequential algorithm}{3}{section.3}%
+\contentsline {paragraph}{Data and distance.}{3}{paragraph*.3}%
+\contentsline {paragraph}{Seeding.}{3}{paragraph*.4}%
+\contentsline {paragraph}{Convergence.}{3}{paragraph*.5}%
+\contentsline {paragraph}{Cost.}{3}{paragraph*.6}%
+\contentsline {section}{\numberline {4}The MPI cluster}{4}{section.4}%
+\contentsline {paragraph}{Validating the distributed execution path.}{4}{paragraph*.7}%
+\contentsline {section}{\numberline {5}Parallelisation strategy}{4}{section.5}%
+\contentsline {paragraph}{Level of parallelism and decomposition technique.}{4}{paragraph*.8}%
+\contentsline {paragraph}{Mapping.}{5}{paragraph*.9}%
+\contentsline {paragraph}{Communication strategy and topology.}{5}{paragraph*.10}%
+\contentsline {paragraph}{Load balance.}{6}{paragraph*.12}%
+\contentsline {paragraph}{Cost model.}{6}{paragraph*.13}%
+\contentsline {paragraph}{Pseudo-code.}{6}{paragraph*.14}%
+\contentsline {section}{\numberline {6}Implementation notes}{7}{section.6}%
+\contentsline {paragraph}{Dataset format.}{7}{paragraph*.15}%
+\contentsline {paragraph}{Timing instrumentation.}{7}{paragraph*.16}%
+\contentsline {paragraph}{Build.}{7}{paragraph*.17}%
+\contentsline {section}{\numberline {7}Experimental methodology}{7}{section.7}%
+\contentsline {paragraph}{What is measured.}{7}{paragraph*.18}%
+\contentsline {paragraph}{Parameters.}{7}{paragraph*.19}%
+\contentsline {paragraph}{Problem sizes.}{7}{paragraph*.20}%
+\contentsline {section}{\numberline {8}Results}{7}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Correctness}{8}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Running time versus problem size}{8}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Granularity and load balance}{9}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Speed-up}{10}{subsection.8.4}%
+\contentsline {paragraph}{Process ladder.}{10}{paragraph*.23}%
+\contentsline {section}{\numberline {9}Discussion}{12}{section.9}%
+\contentsline {section}{\numberline {10}Conclusion}{12}{section.10}%
+\contentsline {section}{Member contributions}{12}{section.10}%
+\contentsline {section}{\numberline {A}Reproduction}{13}{appendix.A}%

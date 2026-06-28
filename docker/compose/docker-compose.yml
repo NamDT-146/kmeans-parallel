@@ -1,0 +1,70 @@
+# Three-node MPI "cluster" for the distributed-path + topology demo.
+#
+# Brings up three containers — node1 (head), node2, node3 — each with its own
+# hostname and a static IP on a private bridge network. They share one SSH key
+# (baked into the image) so mpirun on the head can launch ranks on the others
+# over TCP, exactly like the real Ubuntu cluster. The repo is bind-mounted at
+# /work on every node so all three see the same sources, scripts and binaries.
+#
+#   docker compose -f docker/compose/docker-compose.yml up -d --build
+#   docker compose -f docker/compose/docker-compose.yml exec -u mpi node1 bash docker/compose/demo.sh
+#   docker compose -f docker/compose/docker-compose.yml down
+#
+# Run the demo as the unprivileged 'mpi' user (-u mpi): the passwordless SSH keys
+# and Open MPI both require a non-root user, so an exec as the default root user
+# fails to launch ranks on the other nodes.
+#
+# NOT for timing: the three containers share this host's cores, so this proves
+# the distributed code path and produces the `hostname` topology evidence, while
+# the speedup/granularity numbers come from native single-host runs.
+
+services:
+  node1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kmeans-cluster-node
+    hostname: node1
+    container_name: kmeans-node1
+    networks:
+      kmeans-net:
+        ipv4_address: 10.5.0.11
+    volumes:
+      - ../../:/work
+    working_dir: /work
+    # Head node stays alive; you exec into it to drive the demo.
+    command: ["sleep", "infinity"]
+
+  node2:
+    image: kmeans-cluster-node
+    # node2 reuses the image node1 builds; bring node1 up first (or use --build).
+    depends_on: [node1]
+    hostname: node2
+    container_name: kmeans-node2
+    networks:
+      kmeans-net:
+        ipv4_address: 10.5.0.12
+    volumes:
+      - ../../:/work
+    working_dir: /work
+    command: ["sleep", "infinity"]
+
+  node3:
+    image: kmeans-cluster-node
+    depends_on: [node1]
+    hostname: node3
+    container_name: kmeans-node3
+    networks:
+      kmeans-net:
+        ipv4_address: 10.5.0.13
+    volumes:
+      - ../../:/work
+    working_dir: /work
+    command: ["sleep", "infinity"]
+
+networks:
+  kmeans-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24
