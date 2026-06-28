@@ -14,7 +14,12 @@ Full background: [`CLUSTER_SETUP.md`](CLUSTER_SETUP.md).
 sudo apt update && sudo apt install -y git
 git clone https://github.com/NamDT-146/kmeans-parallel.git kmeans-parallel
 cd kmeans-parallel
+chmod +x scripts/*.sh
 ```
+
+> If you see `Permission denied` when running a script, either run
+> `chmod +x scripts/*.sh` or invoke with bash:
+> `ROLE=slave bash scripts/bootstrap_node.sh`
 
 ---
 
