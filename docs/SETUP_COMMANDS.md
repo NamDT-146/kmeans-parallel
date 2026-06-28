@@ -51,7 +51,12 @@ You can also pass hostnames if they already resolve (e.g. after a partial setup)
 ROLE=master NODE_IPS="node0 node1 node2" scripts/bootstrap_node.sh
 ```
 
-If VM IPs change after a reboot, re-run with the updated list.
+If VM IPs change after a reboot, re-run with the updated list (this **replaces**
+the old `/etc/hosts` block):
+
+```bash
+ROLE=master NODE_IPS="172.20.10.6 172.20.10.5 172.20.10.4" scripts/bootstrap_node.sh
+```
 
 ### 2. Exchange SSH keys (master only)
 
@@ -97,5 +102,5 @@ NODE_USER=mpiuser scripts/run_demo.sh
 - **Old install:** `~/parallel-kmeans-mpi` is not deleted; only use
   `~/kmeans-parallel` for new runs.
 - **Firewall:** if `mpirun` hangs, try `sudo ufw disable` on lab VMs.
-- **Wrong interface:** if MPI aborts with "Unable to find reachable pairing",
-  run with `MPI_IF=<iface>` (find iface via `ip -4 route get 1.1.1.1`).
+- **Stale aliases:** if `run_demo.sh` says *none of the listed hosts is THIS
+  machine*, your `/etc/hosts` has old IPs — re-run bootstrap with `NODE_IPS` as above.
