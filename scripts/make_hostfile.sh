@@ -66,6 +66,8 @@ if [[ ${#LOCAL_HOSTS[@]} -eq 0 ]]; then
     echo "[hostfile] FAIL: none of the listed hosts is THIS machine." >&2
     echo "           Run this on the master and include its alias/IP in the list." >&2
     echo "           this machine's IPs: $(local_ips | paste -sd' ' -)" >&2
+    echo "           /etc/hosts may be stale (DHCP changed your IP). On the master:" >&2
+    echo "             ROLE=master NODE_IPS=\"<master-ip> <worker1-ip> <worker2-ip>\" scripts/bootstrap_node.sh" >&2
     exit 1
 fi
 if [[ ${#LOCAL_HOSTS[@]} -gt 1 ]]; then

@@ -64,6 +64,9 @@ export HOSTFILE
 
 say() { printf '\n========== %s ==========\n' "$*"; }
 
+# shellcheck source=scripts/_cluster_lib.sh
+source "$ROOT/scripts/_cluster_lib.sh"
+
 # --- NODES default from /etc/hosts -----------------------------------------
 # The master's bootstrap (bootstrap_node.sh step 5) writes the cluster's node
 # aliases into /etc/hosts inside a marked block, master first:
@@ -82,6 +85,22 @@ if [[ -z "${NODES:-}" ]]; then
         f && $2 ~ /^node[0-9]+$/ {print $2}
     ' /etc/hosts 2>/dev/null | paste -sd' ' -)"
     [[ -n "$NODES" ]] && echo "[demo] NODES not set; using /etc/hosts aliases: $NODES"
+fi
+
+# Reject stale /etc/hosts aliases (node0 points at an old IP after DHCP churn).
+if [[ -n "${NODES:-}" ]]; then
+    _demo_local=0
+    for _h in $NODES; do
+        is_local "$_h" && _demo_local=1 && break
+    done
+    if [[ $_demo_local -eq 0 ]]; then
+        echo "[demo] FAIL: none of the node aliases ($NODES) is this machine." >&2
+        echo "       /etc/hosts is probably stale. On the master, refresh with" >&2
+        echo "       current LAN IPs (this machine first), then re-run:" >&2
+        echo "         ROLE=master NODE_IPS=\"$(local_ips | head -1) <worker1-ip> <worker2-ip>\" scripts/bootstrap_node.sh" >&2
+        echo "         QUICK=1 NODE_USER=${NODE_USER:-mpi} scripts/run_demo.sh" >&2
+        exit 1
+    fi
 fi
 
 # --- 0. hostfile ------------------------------------------------------------

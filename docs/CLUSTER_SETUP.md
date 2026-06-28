@@ -253,6 +253,7 @@ individual experiments by hand, proceed to [`docs/RUNBOOK.md`](RUNBOOK.md).
 | `mpirun` hangs | Passwordless SSH not working (step 5), or firewall. `sudo ufw disable` on the lab VMs. |
 | `bad interpreter: /bin/bash^M` | CRLF line endings. `git clone` inside the VM, or run `sed -i 's/\r$//' scripts/*.sh`. |
 | `Permission denied` running `scripts/*.sh` | Scripts not executable. Run `chmod +x scripts/*.sh`, or use `bash scripts/bootstrap_node.sh`. |
+| `none of the listed hosts is THIS machine` / stale `node0` | DHCP changed VM IPs; `/etc/hosts` still has old addresses. On the master: `ROLE=master NODE_IPS="<this-ip> <w1> <w2>" scripts/bootstrap_node.sh` then re-run `run_demo.sh`. |
 | `mpirun: command not found` | MPI not installed / not on PATH. Re-run bootstrap. |
 | VMs can't ping each other | Network not Bridged, or on different WiFi networks. Re-check step 1.3. |
 | `There are not enough slots` | Asking for more ranks than `slots` in the hostfile. Raise slots or add `--oversubscribe`. |

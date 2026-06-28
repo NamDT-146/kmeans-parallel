@@ -45,7 +45,7 @@ local_ips() {
         elif command -v ifconfig >/dev/null 2>&1; then
             ifconfig 2>/dev/null | awk '/inet /{print $2}'
         fi
-    } | tr ' ' '\n' | grep -vE '^$' | sort -u || true
+    } | tr ' ' '\n' | grep -vE '^$|^127\.' | sort -u || true
 }
 _self_ips="$(local_ips)"
 

@@ -19,6 +19,9 @@
 # node1, node2, ...). Non-interactive example:
 #   ROLE=master NODE_IPS="192.168.1.50 192.168.1.51 192.168.1.52" scripts/bootstrap_node.sh
 #
+# To replace stale aliases after a DHCP IP change, pass NODE_IPS again (or FRESH=1):
+#   ROLE=master NODE_IPS="172.20.10.6 172.20.10.5 172.20.10.4" scripts/bootstrap_node.sh
+#
 # Passphrase-less keys are required because mpirun logs in to workers
 # non-interactively. This is appropriate for an isolated lab cluster on a private
 # network; do not reuse these keys elsewhere.
@@ -112,25 +115,41 @@ _self_lan_ips() {
         elif command -v ifconfig >/dev/null 2>&1; then
             ifconfig 2>/dev/null | awk '/inet /{print $2}' | grep -v '127.0.0.1'
         fi
-    } | tr ' ' '\n' | grep -vE '^$' | sort -u || true
+    } | tr ' ' '\n' | grep -vE '^$|^127\.' | sort -u || true
 }
 
-# The master must resolve node0/node1/... to launch mpirun across the cluster.
-# These live in /etc/hosts. We only write them when they aren't already set, so
-# re-running is a no-op; the cluster size comes from however many IPs are given.
-echo "==> [5/7] Node aliases in /etc/hosts (node0=master, node1, node2, ...)"
-HOSTS_FILE="/etc/hosts"
-HOSTS_BEGIN="# >>> kmeans-cluster >>>"
-HOSTS_END="# <<< kmeans-cluster <<<"
-if grep -qF "$HOSTS_BEGIN" "$HOSTS_FILE"; then
-    echo "    aliases already set, leaving /etc/hosts untouched:"
+_hosts_block_present() {
+    grep -qF "$HOSTS_BEGIN" "$HOSTS_FILE"
+}
+
+_hosts_print_block() {
     awk -v b="$HOSTS_BEGIN" -v e="$HOSTS_END" \
         '$0==b{f=1;next} $0==e{f=0} f' "$HOSTS_FILE" | sed 's/^/      /'
-elif [[ "$ROLE" != "master" ]]; then
-    echo "    not master and no aliases set; skipping"
-    echo "    (workers don't need the aliases — only the master launches mpirun)"
-else
-    ips="${NODE_IPS:-}"
+}
+
+_hosts_remove_block() {
+    if _hosts_block_present; then
+        sudo sed -i '/^# >>> kmeans-cluster >>>$/,/^# <<< kmeans-cluster <<<$/d' "$HOSTS_FILE"
+    fi
+}
+
+_hosts_node0_ip() {
+    awk -v b="$HOSTS_BEGIN" -v e="$HOSTS_END" \
+        '$0==b{f=1;next} $0==e{f=0} f && $2=="node0"{print $1; exit}' "$HOSTS_FILE"
+}
+
+_hosts_master_is_local() {
+    local n0 lan
+    n0="$(_hosts_node0_ip)"
+    [[ -n "$n0" ]] || return 1
+    while IFS= read -r lan; do
+        [[ -n "$lan" && "$lan" == "$n0" ]] && return 0
+    done < <(_self_lan_ips)
+    return 1
+}
+
+_write_hosts_from_ips() {
+    local ips="${1:-}"
     if [[ -z "$ips" ]]; then
         echo "    No kmeans-cluster aliases found in /etc/hosts."
         echo "    Enter the LAN IP (or hostname) of EVERY node, MASTER FIRST, space-separated."
@@ -138,11 +157,9 @@ else
         echo "    The number of entries sets the cluster size (node0=master, node1, ...)."
         read -rp "    IPs: " ips
     fi
-    # Split on whitespace and commas, drop blanks, resolve hostnames to IPv4.
+    local -a entries=()
+    local idx=0 master_ip="" token ip
     IFS=', ' read -ra _raw_ips <<< "$ips"
-    entries=()
-    idx=0
-    master_ip=""
     for token in "${_raw_ips[@]}"; do
         token="$(echo "$token" | tr -d '[:space:]')"
         [[ -z "$token" ]] && continue
@@ -161,8 +178,7 @@ else
         echo "    ERROR: no IPs provided; cannot configure node aliases." >&2
         exit 1
     fi
-    # Warn if the first entry is not this machine (master should be listed first).
-    master_ok=0
+    local master_ok=0 lan
     while IFS= read -r lan; do
         [[ -n "$lan" && "$lan" == "$master_ip" ]] && master_ok=1
     done < <(_self_lan_ips)
@@ -170,7 +186,7 @@ else
         echo "    WARN: first entry ($master_ip) is not a LAN IP on this machine." >&2
         echo "           List the master (this VM) first in NODE_IPS." >&2
     fi
-    echo "    writing ${#entries[@]} alias(es) to /etc/hosts:"
+    _hosts_remove_block
     {
         printf '%s\n' "$HOSTS_BEGIN"
         printf '%s\n' "${entries[@]}"
@@ -178,6 +194,39 @@ else
     } | sudo tee -a "$HOSTS_FILE" >/dev/null
     echo "    wrote ${#entries[@]} node alias(es) to /etc/hosts:"
     printf '      %s\n' "${entries[@]}"
+}
+
+# The master must resolve node0/node1/... to launch mpirun across the cluster.
+# These live in /etc/hosts. Re-run with NODE_IPS to replace stale aliases after
+# DHCP changes; pass FRESH=1 as an alias for the same behaviour.
+echo "==> [5/7] Node aliases in /etc/hosts (node0=master, node1, node2, ...)"
+HOSTS_FILE="/etc/hosts"
+HOSTS_BEGIN="# >>> kmeans-cluster >>>"
+HOSTS_END="# <<< kmeans-cluster <<<"
+if [[ "$ROLE" != "master" ]]; then
+    if _hosts_block_present; then
+        echo "    aliases present (informational; workers don't need them for mpirun):"
+        _hosts_print_block
+    else
+        echo "    not master and no aliases set; skipping"
+        echo "    (workers don't need the aliases — only the master launches mpirun)"
+    fi
+elif _hosts_block_present && [[ -n "${NODE_IPS:-}" || -n "${FRESH:-}" ]]; then
+    echo "    replacing existing kmeans-cluster aliases..."
+    _write_hosts_from_ips "${NODE_IPS:-}"
+elif _hosts_block_present && _hosts_master_is_local; then
+    echo "    aliases already set, leaving /etc/hosts untouched:"
+    _hosts_print_block
+elif _hosts_block_present; then
+    echo "    ERROR: /etc/hosts aliases are STALE — node0 is not this machine." >&2
+    echo "           (VM IPs often change on a phone hotspot after reboot.)" >&2
+    _hosts_print_block
+    echo "    This machine: $(hostname)  LAN: $(_self_lan_ips | paste -sd' ' -)" >&2
+    echo "    Fix — pass current IPs with this machine FIRST:" >&2
+    echo "      ROLE=master NODE_IPS=\"<master-ip> <worker1-ip> <worker2-ip>\" scripts/bootstrap_node.sh" >&2
+    exit 1
+else
+    _write_hosts_from_ips "${NODE_IPS:-}"
 fi
 
 # For an isolated lab cluster on a private hotspot, VM IPs and host keys change
